@@ -1,21 +1,67 @@
-# buscaminas
+# Calculo de heuristica
 
-1. Hallar heuristica de todos las celdas disponibles (celdas con 0) que tengan celdas adyacentes con numeros positivos.
-2. Elegir la celda con mayor heuristica y marcar la celda como mina (-2)
-3. Verificar que sea una mina en una posicion valida
-4. Si la mina es valida, seguir y repetir desde el paso 1, sino es valida, descartarla y tomar la siguiente celda con mayor heuristica y empezar desde el paso 2
-5. El algoritmo termina cuando no sea posible marcar mas minas
-6. Se elije como mejor movimiento aquella celda disponible que tenga menos posibilidad de ser una mina
+Para el calculo de la heuristica, se hace lo siguiente:  
 
-# Calculo de la heuristica:
+- Se toma una celda, vacia y se forma un cuadrado en diagonal hacia ella, para revisar si es un caso especial, sino se halla la heuristica de forma normal
 
-1. Se halla las celdas adyacentes con numeros positivos
-3. A aquellas celdas del paso 1 se les resta a su valor la cantidad de minas alrededor y se va acumulando ese valor (Llamemoslo M)
-4. A aquellas celdas de paso 1 se les halla la cantidad de celdas vacias alrededor, si 2 celdas comparten 1 misma celda vacia solo contara como 1 sola y no 1 para cada uno (Llamemoslo EC)
-5. Se resta el resultado del paso 2 con 3 y se divide a ese resultado el paso 4, asi: M / EC
+- Ejemplo de caso especial:  
+    - Primero, se toma una celda vacia con celdas adyacentes con numeros y se forma un cuadrado en diagonal, asi:  
+    
+    ![image](https://github.com/user-attachments/assets/d144aa9c-1ba2-4fff-ad7f-38ac56af487e)
+    
+    - Luego nos desplazamos a la celda numerica diagonal a la celda vacia:  
+    
+    ![image](https://github.com/user-attachments/assets/6962cea3-d90b-4ccc-b701-a0bc6de6d1d5)
+    
+    - Si el valor de la celda coincide con el numero de celdas vacias que tiene alrededor, entonces la celda vacia que evaluamos es una mina
 
-# Adicional
+- Ejemplo de caso general:
+    - En caso de que no se haya encontrado un caso especial, se halla la heuristica con una celda vacia con celdas adyacentes numericas, asi:  
+    
+    ![image](https://github.com/user-attachments/assets/f2c60812-8ab8-41f5-ac1c-4d89eaf30de7)
+    
+    - A esa celda vacia buscamos sus celdas adyacentes con numeros y sumaremos sus valores (LLamemoslo M):  
+    
+    ![image](https://github.com/user-attachments/assets/378d00d9-b1b3-43b9-a1c3-2429bd2194de)
+    
+    - Ademas a esas celdas, contaremos las celdas vacias que tengan alrededor (Llamemoslo EC) y el numero de minas alrededor (MP):  
+    
+    ![image](https://github.com/user-attachments/assets/81da865e-9caa-4e18-8b94-9403748dc94d)
+    
+    - Si nos basamos del caso especial, la siguiente celda es una mina:  
+    
+    ![image](https://github.com/user-attachments/assets/d813dec5-4f49-4f2b-81b8-332e48b2fe8d)
 
-1. El valor de una celda con mina es -2
-2. El valor de una celda vacia en la que no se puede jugar es -1
-3. El valor de una celda vacia en la que se puede jugar es 0
+    - Finalmente, la heuristica se halla asi:  
+    
+    $H = \dfrac{M - MP}{EC} = \dfrac{3 - 1}{4} = \dfrac{2}{4} = \dfrac{1}{2} = 0.5$
+
+    - Nota: Si EC es cero, entonces H es 1 si hay minas por colocar
+
+# Algoritmo para resolver el buscaminas
+
+La logica del algoritmo es encontrar las posibilidades (se limitan) de posicionar las minas en el tablero y que sea valido, luego con esas posibilidades se halla una probabilidad.
+
+El algoritmo hace lo siguiente:
+1. Calcula la heuristica de las celdas de la tabla que cumplan la condicion para ser calculadas
+2. De esas heuristicas se eliminan los movimientos invalidos  
+    - Un movimiento es invalido si se intento colocar una mina, pero al colocarse rompe las reglas de buscaminas
+3. Primeramente, se revisa si se puede continuar poniendo minas en el tablero (si alguna celda numerica le falta una mina alrededor) o si tengo heuristicas a evaluar
+    - Si no es posible continuar, se revisa si el tablero que se formo es valido
+    - Si el tablero es valido, se guarda esa posibilidad, sino nos devolvemos
+4. De esas heuristicas restantes se obtiene la mayor heuristica
+    - Si el valor de esa heuristica es 100 (caso especial), entonces se descartan las demas heuristicas
+5. Se crea un nuevo tablero con ese movimiento
+    - Si ese tablero ya fue visitado nos devolvemos, sino se añade a los tableros ya visitidos y continuamos
+6. Se revisa si el movimiento es valido
+    - Si ese movimiento es valido en el tablero, se vuelven a calcular las heuristicas y se sigue con el algoritmo
+    - Si no es valido, se añade como movimiento invalido para las iteraciones hermanas
+7. Se siguen revisando posibilidades quitando el movimiento anterior, pero con las mismas heuristicas
+8. El algoritmo termina cuando se haya alcanzado el numero maximo de posibilidades o no haya más heuristicas que evaluar
+9. Con los tableros obtenidos se halla la probabilidad de que haya una mina en las posiciones y se devuelve el mejor movimiento
+
+<strong>NOTA:</strong>
+1. El tablero es valido solo
+    - El tablero es valido solo si esta lleno y todas las celdas numericas tienen el mismo numero de minas alrededor que lo que indica su valor
+    - Si no esta lleno y hay alguna celda numerica con un menor numero de minas alrededor que lo que indica su valor
+2. Cuanto mayor se el maximo de posibilidades permitido, mejor sera el movimiento que dara como que no es mina, pero se tardara más en el algoritmo.
