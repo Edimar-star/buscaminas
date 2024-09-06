@@ -58,8 +58,8 @@ El algoritmo hace lo siguiente:
     - Si no es valido, se añade como movimiento invalido para las iteraciones hermanas
 7. Se siguen revisando posibilidades quitando el movimiento anterior, pero con las mismas heuristicas
 8. El algoritmo termina cuando se haya alcanzado el numero maximo de posibilidades o no haya más heuristicas que evaluar
-9. Con los tableros obtenidos se halla la probabilidad de que haya una mina en las posiciones y se devuelve el mejor movimiento
-10. Si hay mas de un movimiento, entonces se busca aquel en el que la resta de M (suma de los valores de las celdas adyacentes con numeros) menos MP (Minas posicionadas) sea mayor.
+9. Con los tableros obtenidos se halla la probabilidad de que haya una mina en las posiciones y se devuelve el movimiento con menor probabilidad
+10. si hay mas de un movimiento, entonces se busca aquel en el que la resta de M (suma de los valores de las celdas adyacentes con numeros) menos MP (Minas posicionadas) sea mayor.
 
 <strong>NOTA:</strong>
 1. El tablero es valido solo
