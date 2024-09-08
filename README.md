@@ -34,7 +34,7 @@ Para el calculo de la heuristica, se hace lo siguiente:
 
     - Finalmente, la heuristica se halla asi:  
     
-    $H = \dfrac{M - MP}{EC} = \dfrac{3 - 1}{4} = \dfrac{2}{4} = \dfrac{1}{2} = 0.5$
+    $H = \dfrac{M - MP}{EC} = \dfrac{3 - 1}{3} = \dfrac{2}{3} = 0.66$
 
     - Nota: Si EC es cero, entonces H es 1 si hay minas por colocar
 
